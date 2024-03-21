@@ -6,107 +6,620 @@
         <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
         <meta name="mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-capable" content="yes">
-        <link rel="stylesheet" href="./resources/ol.css">
-        <link rel="stylesheet" href="resources/fontawesome-all.min.css">
-        <link rel="stylesheet" href="./resources/ol-layerswitcher.css">
-        <link rel="stylesheet" href="./resources/qgis2web.css">
-<style>
-.search-layer {
-  top: 100px;
-  left: .5em;
-}
-.ol-touch .search-layer {
-  top: 130px;
-}
-</style>
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
         <style>
-        html, body {
-            background-color: #ffffff;
-        }
-        .ol-control button {
-            background-color: #ffffff !important;
-            color: #000000 !important;
-            border-radius: 0px !important;
-        }
-        .ol-zoom, .geolocate, .gcd-gl-control .ol-control {
-            background-color: rgba(255,255,255,.4) !important;
-            padding: 3px !important;
-        }
-        .ol-scale-line {
-            background: none !important;
-        }
-        .ol-scale-line-inner {
-            border: 2px solid #ffffff !important;
-            border-top: none !important;
-            background: rgba(255, 255, 255, 0.5) !important;
-            color: black !important;
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
         }
         </style>
-<style>
-.tooltip {
-  position: relative;
-  background: rgba(0, 0, 0, 0.5);
-  border-radius: 4px;
-  color: white;
-  padding: 4px 8px;
-  opacity: 0.7;
-  white-space: nowrap;
-}
-.tooltip-measure {
-  opacity: 1;
-  font-weight: bold;
-}
-.tooltip-static {
-  background-color: #ffcc33;
-  color: black;
-  border: 1px solid white;
-}
-.tooltip-measure:before,
-.tooltip-static:before {
-  border-top: 6px solid rgba(0, 0, 0, 0.5);
-  border-right: 6px solid transparent;
-  border-left: 6px solid transparent;
-  content: "";
-  position: absolute;
-  bottom: -6px;
-  margin-left: -7px;
-  left: 50%;
-}
-.tooltip-static:before {
-  border-top-color: #ffcc33;
-}
-.measure-control {
-  top: 65px;
-  left: .5em;
-}
-.ol-touch .measure-control {
-  top: 80px;
-}
-</style>
-        <style>
-        #map {
-            width: 1482px;
-            height: 778px;
-        }
-        </style>
-        <title>MAPA DE CARACTERIZACION DE DAÑOS EN EL FEN-FENÓMENO EL NIÑO 2017</title>
+        <title></title>
     </head>
     <body>
         <div id="map">
-            <div id="popup" class="ol-popup">
-                <a href="#" id="popup-closer" class="ol-popup-closer"></a>
-                <div id="popup-content"></div>
-            </div>
         </div>
-        <script src="resources/qgis2web_expressions.js"></script>
-        <script src="resources/polyfills.js"></script>
-        <script src="./resources/functions.js"></script>
-        <script src="./resources/ol.js"></script>
-        <script src="./resources/ol-layerswitcher.js"></script>
-        <script src="layers/LIMITE_DISTRITAL_2020_INEI_geogpsperu_juansuyo_931381206_0.js"></script><script src="layers/KM_KM2_1.js"></script>
-        <script src="styles/LIMITE_DISTRITAL_2020_INEI_geogpsperu_juansuyo_931381206_0_style.js"></script><script src="styles/KM_KM2_1_style.js"></script>
-        <script src="./layers/layers.js" type="text/javascript"></script> 
-        <script src="./resources/Autolinker.min.js"></script>
-        <script src="./resources/qgis2web.js"></script>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
+        <script src="data/LIMITE_DISTRITAL_2020_INEI_geogpsperu_juansuyo_931381206_1.js"></script>
+        <script src="data/KMDAADOKM2_2.js"></script>
+        <script src="data/SOLESPERCPITAPRESUPUESTOMILLONES_3.js"></script>
+        <script src="data/PARCIALGASTO_4.js"></script>
+        <script src="data/DAOPARCIALREDVIALTOTAL_5.js"></script>
+        <script src="data/DAOPARCIAL_6.js"></script>
+        <script>
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        })
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+            if (bounds_group.getLayers().length) {
+                map.fitBounds(bounds_group.getBounds());
+            }
+        }
+        map.createPane('pane_GoogleRoad_0');
+        map.getPane('pane_GoogleRoad_0').style.zIndex = 400;
+        var layer_GoogleRoad_0 = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+            pane: 'pane_GoogleRoad_0',
+            opacity: 1.0,
+            attribution: '<a href="https://www.google.at/permissions/geoguidelines/attr-guide.html">Map data ©2015 Google</a>',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 20
+        });
+        layer_GoogleRoad_0;
+        map.addLayer(layer_GoogleRoad_0);
+        function pop_LIMITE_DISTRITAL_2020_INEI_geogpsperu_juansuyo_931381206_1(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2"><strong>NOMBDEP</strong><br />' + (feature.properties['NOMBDEP'] !== null ? autolinker.link(feature.properties['NOMBDEP'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>NOMBPROV</strong><br />' + (feature.properties['NOMBPROV'] !== null ? autolinker.link(feature.properties['NOMBPROV'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>NOMBDIST</strong><br />' + (feature.properties['NOMBDIST'] !== null ? autolinker.link(feature.properties['NOMBDIST'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>AREA_KM2</strong><br />' + (feature.properties['AREA_KM2'] !== null ? autolinker.link(feature.properties['AREA_KM2'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_LIMITE_DISTRITAL_2020_INEI_geogpsperu_juansuyo_931381206_1_0() {
+            return {
+                pane: 'pane_LIMITE_DISTRITAL_2020_INEI_geogpsperu_juansuyo_931381206_1',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0, 
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_LIMITE_DISTRITAL_2020_INEI_geogpsperu_juansuyo_931381206_1');
+        map.getPane('pane_LIMITE_DISTRITAL_2020_INEI_geogpsperu_juansuyo_931381206_1').style.zIndex = 401;
+        map.getPane('pane_LIMITE_DISTRITAL_2020_INEI_geogpsperu_juansuyo_931381206_1').style['mix-blend-mode'] = 'normal';
+        var layer_LIMITE_DISTRITAL_2020_INEI_geogpsperu_juansuyo_931381206_1 = new L.geoJson(json_LIMITE_DISTRITAL_2020_INEI_geogpsperu_juansuyo_931381206_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_LIMITE_DISTRITAL_2020_INEI_geogpsperu_juansuyo_931381206_1',
+            layerName: 'layer_LIMITE_DISTRITAL_2020_INEI_geogpsperu_juansuyo_931381206_1',
+            pane: 'pane_LIMITE_DISTRITAL_2020_INEI_geogpsperu_juansuyo_931381206_1',
+            onEachFeature: pop_LIMITE_DISTRITAL_2020_INEI_geogpsperu_juansuyo_931381206_1,
+            style: style_LIMITE_DISTRITAL_2020_INEI_geogpsperu_juansuyo_931381206_1_0,
+        });
+        bounds_group.addLayer(layer_LIMITE_DISTRITAL_2020_INEI_geogpsperu_juansuyo_931381206_1);
+        map.addLayer(layer_LIMITE_DISTRITAL_2020_INEI_geogpsperu_juansuyo_931381206_1);
+        function pop_KMDAADOKM2_2(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2"><strong>DISTRITOS</strong><br />' + (feature.properties['DISTRITOS'] !== null ? autolinker.link(feature.properties['DISTRITOS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>KM/KM2</strong><br />' + (feature.properties['KM/KM2'] !== null ? autolinker.link(feature.properties['KM/KM2'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_KMDAADOKM2_2_0(feature) {
+            if (feature.properties['KM/KM2'] >= 1.000000 && feature.properties['KM/KM2'] <= 1.000000 ) {
+                return {
+                pane: 'pane_KMDAADOKM2_2',
+                radius: 2.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(78,231,27,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['KM/KM2'] >= 1.000000 && feature.properties['KM/KM2'] <= 2.000000 ) {
+                return {
+                pane: 'pane_KMDAADOKM2_2',
+                radius: 7.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,191,111,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['KM/KM2'] >= 2.000000 && feature.properties['KM/KM2'] <= 3.000000 ) {
+                return {
+                pane: 'pane_KMDAADOKM2_2',
+                radius: 12.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(227,26,28,1.0)',
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane_KMDAADOKM2_2');
+        map.getPane('pane_KMDAADOKM2_2').style.zIndex = 402;
+        map.getPane('pane_KMDAADOKM2_2').style['mix-blend-mode'] = 'normal';
+        var layer_KMDAADOKM2_2 = new L.geoJson(json_KMDAADOKM2_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_KMDAADOKM2_2',
+            layerName: 'layer_KMDAADOKM2_2',
+            pane: 'pane_KMDAADOKM2_2',
+            onEachFeature: pop_KMDAADOKM2_2,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_KMDAADOKM2_2_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_KMDAADOKM2_2);
+        map.addLayer(layer_KMDAADOKM2_2);
+        function pop_SOLESPERCPITAPRESUPUESTOMILLONES_3(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2"><strong>DISTRITOS</strong><br />' + (feature.properties['DISTRITOS'] !== null ? autolinker.link(feature.properties['DISTRITOS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>PERCAPITA</strong><br />' + (feature.properties['PERCAPITA'] !== null ? autolinker.link(feature.properties['PERCAPITA'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_SOLESPERCPITAPRESUPUESTOMILLONES_3_0(feature) {
+            if (feature.properties['PERCAPITA'] >= 1.000000 && feature.properties['PERCAPITA'] <= 1.000000 ) {
+                return {
+                pane: 'pane_SOLESPERCPITAPRESUPUESTOMILLONES_3',
+                radius: 2.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(78,231,27,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['PERCAPITA'] >= 1.000000 && feature.properties['PERCAPITA'] <= 2.000000 ) {
+                return {
+                pane: 'pane_SOLESPERCPITAPRESUPUESTOMILLONES_3',
+                radius: 7.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,191,111,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['PERCAPITA'] >= 2.000000 && feature.properties['PERCAPITA'] <= 3.000000 ) {
+                return {
+                pane: 'pane_SOLESPERCPITAPRESUPUESTOMILLONES_3',
+                radius: 12.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(227,26,28,1.0)',
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane_SOLESPERCPITAPRESUPUESTOMILLONES_3');
+        map.getPane('pane_SOLESPERCPITAPRESUPUESTOMILLONES_3').style.zIndex = 403;
+        map.getPane('pane_SOLESPERCPITAPRESUPUESTOMILLONES_3').style['mix-blend-mode'] = 'normal';
+        var layer_SOLESPERCPITAPRESUPUESTOMILLONES_3 = new L.geoJson(json_SOLESPERCPITAPRESUPUESTOMILLONES_3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_SOLESPERCPITAPRESUPUESTOMILLONES_3',
+            layerName: 'layer_SOLESPERCPITAPRESUPUESTOMILLONES_3',
+            pane: 'pane_SOLESPERCPITAPRESUPUESTOMILLONES_3',
+            onEachFeature: pop_SOLESPERCPITAPRESUPUESTOMILLONES_3,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_SOLESPERCPITAPRESUPUESTOMILLONES_3_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_SOLESPERCPITAPRESUPUESTOMILLONES_3);
+        map.addLayer(layer_SOLESPERCPITAPRESUPUESTOMILLONES_3);
+        function pop_PARCIALGASTO_4(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2"><strong>DISTRITOS</strong><br />' + (feature.properties['DISTRITOS'] !== null ? autolinker.link(feature.properties['DISTRITOS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>GASTO_TOTA</strong><br />' + (feature.properties['GASTO_TOTA'] !== null ? autolinker.link(feature.properties['GASTO_TOTA'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_PARCIALGASTO_4_0(feature) {
+            if (feature.properties['GASTO_TOTA'] >= 1.000000 && feature.properties['GASTO_TOTA'] <= 1.000000 ) {
+                return {
+                pane: 'pane_PARCIALGASTO_4',
+                radius: 2.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(78,231,27,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['GASTO_TOTA'] >= 1.000000 && feature.properties['GASTO_TOTA'] <= 2.000000 ) {
+                return {
+                pane: 'pane_PARCIALGASTO_4',
+                radius: 7.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,191,111,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['GASTO_TOTA'] >= 2.000000 && feature.properties['GASTO_TOTA'] <= 3.000000 ) {
+                return {
+                pane: 'pane_PARCIALGASTO_4',
+                radius: 12.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(227,26,28,1.0)',
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane_PARCIALGASTO_4');
+        map.getPane('pane_PARCIALGASTO_4').style.zIndex = 404;
+        map.getPane('pane_PARCIALGASTO_4').style['mix-blend-mode'] = 'normal';
+        var layer_PARCIALGASTO_4 = new L.geoJson(json_PARCIALGASTO_4, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_PARCIALGASTO_4',
+            layerName: 'layer_PARCIALGASTO_4',
+            pane: 'pane_PARCIALGASTO_4',
+            onEachFeature: pop_PARCIALGASTO_4,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_PARCIALGASTO_4_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_PARCIALGASTO_4);
+        map.addLayer(layer_PARCIALGASTO_4);
+        function pop_DAOPARCIALREDVIALTOTAL_5(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2"><strong>DISTRITOS</strong><br />' + (feature.properties['DISTRITOS'] !== null ? autolinker.link(feature.properties['DISTRITOS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>DAÑO/RED_</strong><br />' + (feature.properties['DAÑO/RED_'] !== null ? autolinker.link(feature.properties['DAÑO/RED_'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_DAOPARCIALREDVIALTOTAL_5_0(feature) {
+            if (feature.properties['DAÑO/RED_'] >= 1.000000 && feature.properties['DAÑO/RED_'] <= 1.000000 ) {
+                return {
+                pane: 'pane_DAOPARCIALREDVIALTOTAL_5',
+                radius: 2.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(78,231,27,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['DAÑO/RED_'] >= 1.000000 && feature.properties['DAÑO/RED_'] <= 2.000000 ) {
+                return {
+                pane: 'pane_DAOPARCIALREDVIALTOTAL_5',
+                radius: 7.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,191,111,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['DAÑO/RED_'] >= 2.000000 && feature.properties['DAÑO/RED_'] <= 3.000000 ) {
+                return {
+                pane: 'pane_DAOPARCIALREDVIALTOTAL_5',
+                radius: 12.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(227,26,28,1.0)',
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane_DAOPARCIALREDVIALTOTAL_5');
+        map.getPane('pane_DAOPARCIALREDVIALTOTAL_5').style.zIndex = 405;
+        map.getPane('pane_DAOPARCIALREDVIALTOTAL_5').style['mix-blend-mode'] = 'normal';
+        var layer_DAOPARCIALREDVIALTOTAL_5 = new L.geoJson(json_DAOPARCIALREDVIALTOTAL_5, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_DAOPARCIALREDVIALTOTAL_5',
+            layerName: 'layer_DAOPARCIALREDVIALTOTAL_5',
+            pane: 'pane_DAOPARCIALREDVIALTOTAL_5',
+            onEachFeature: pop_DAOPARCIALREDVIALTOTAL_5,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_DAOPARCIALREDVIALTOTAL_5_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_DAOPARCIALREDVIALTOTAL_5);
+        map.addLayer(layer_DAOPARCIALREDVIALTOTAL_5);
+        function pop_DAOPARCIAL_6(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2"><strong>DISTRITOS</strong><br />' + (feature.properties['DISTRITOS'] !== null ? autolinker.link(feature.properties['DISTRITOS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>DAÑO_CARR</strong><br />' + (feature.properties['DAÑO_CARR'] !== null ? autolinker.link(feature.properties['DAÑO_CARR'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_DAOPARCIAL_6_0(feature) {
+            if (feature.properties['DAÑO_CARR'] >= 1.000000 && feature.properties['DAÑO_CARR'] <= 1.000000 ) {
+                return {
+                pane: 'pane_DAOPARCIAL_6',
+                radius: 2.0,
+                opacity: 1,
+                color: 'rgba(50,87,128,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(78,231,27,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['DAÑO_CARR'] >= 1.000000 && feature.properties['DAÑO_CARR'] <= 2.000000 ) {
+                return {
+                pane: 'pane_DAOPARCIAL_6',
+                radius: 7.0,
+                opacity: 1,
+                color: 'rgba(50,87,128,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,191,111,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['DAÑO_CARR'] >= 2.000000 && feature.properties['DAÑO_CARR'] <= 3.000000 ) {
+                return {
+                pane: 'pane_DAOPARCIAL_6',
+                radius: 12.0,
+                opacity: 1,
+                color: 'rgba(50,87,128,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(227,26,28,1.0)',
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane_DAOPARCIAL_6');
+        map.getPane('pane_DAOPARCIAL_6').style.zIndex = 406;
+        map.getPane('pane_DAOPARCIAL_6').style['mix-blend-mode'] = 'normal';
+        var layer_DAOPARCIAL_6 = new L.geoJson(json_DAOPARCIAL_6, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_DAOPARCIAL_6',
+            layerName: 'layer_DAOPARCIAL_6',
+            pane: 'pane_DAOPARCIAL_6',
+            onEachFeature: pop_DAOPARCIAL_6,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_DAOPARCIAL_6_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_DAOPARCIAL_6);
+        map.addLayer(layer_DAOPARCIAL_6);
+        var osmGeocoder = new L.Control.Geocoder({
+            collapsed: true,
+            position: 'topleft',
+            text: 'Search',
+            title: 'Testing'
+        }).addTo(map);
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .className += ' fa fa-search';
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .title += 'Search for a place';
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'DAÑO PARCIAL <br /><table><tr><td style="text-align: center;"><img src="legend/DAOPARCIAL_6_110.png" /></td><td>1 - 1</td></tr><tr><td style="text-align: center;"><img src="legend/DAOPARCIAL_6_121.png" /></td><td>1 - 2</td></tr><tr><td style="text-align: center;"><img src="legend/DAOPARCIAL_6_232.png" /></td><td>2 - 3</td></tr></table>': layer_DAOPARCIAL_6,'DAÑO PARCIAL/ RED VIAL TOTAL <br /><table><tr><td style="text-align: center;"><img src="legend/DAOPARCIALREDVIALTOTAL_5_110.png" /></td><td>1 - 1</td></tr><tr><td style="text-align: center;"><img src="legend/DAOPARCIALREDVIALTOTAL_5_121.png" /></td><td>1 - 2</td></tr><tr><td style="text-align: center;"><img src="legend/DAOPARCIALREDVIALTOTAL_5_232.png" /></td><td>2 - 3</td></tr></table>': layer_DAOPARCIALREDVIALTOTAL_5,'PARCIAL GASTO (%) <br /><table><tr><td style="text-align: center;"><img src="legend/PARCIALGASTO_4_110.png" /></td><td>1 - 1</td></tr><tr><td style="text-align: center;"><img src="legend/PARCIALGASTO_4_121.png" /></td><td>1 - 2</td></tr><tr><td style="text-align: center;"><img src="legend/PARCIALGASTO_4_232.png" /></td><td>2 - 3</td></tr></table>': layer_PARCIALGASTO_4,'SOLES PER CÁPITA (PRESUPUESTO/MILLONES) <br /><table><tr><td style="text-align: center;"><img src="legend/SOLESPERCPITAPRESUPUESTOMILLONES_3_110.png" /></td><td>1 - 1</td></tr><tr><td style="text-align: center;"><img src="legend/SOLESPERCPITAPRESUPUESTOMILLONES_3_121.png" /></td><td>1 - 2</td></tr><tr><td style="text-align: center;"><img src="legend/SOLESPERCPITAPRESUPUESTOMILLONES_3_232.png" /></td><td>2 - 3</td></tr></table>': layer_SOLESPERCPITAPRESUPUESTOMILLONES_3,'KM DAÑADO/KM2 <br /><table><tr><td style="text-align: center;"><img src="legend/KMDAADOKM2_2_110.png" /></td><td>1 - 1</td></tr><tr><td style="text-align: center;"><img src="legend/KMDAADOKM2_2_121.png" /></td><td>1 - 2</td></tr><tr><td style="text-align: center;"><img src="legend/KMDAADOKM2_2_232.png" /></td><td>2 - 3</td></tr></table>': layer_KMDAADOKM2_2,'<img src="legend/LIMITE_DISTRITAL_2020_INEI_geogpsperu_juansuyo_931381206_1.png" /> LIMITE_DISTRITAL_2020_INEI_geogpsperu_juansuyo_931381206': layer_LIMITE_DISTRITAL_2020_INEI_geogpsperu_juansuyo_931381206_1,"Google Road": layer_GoogleRoad_0,},{collapsed:false}).addTo(map);
+        setBounds();
+        var i = 0;
+        layer_LIMITE_DISTRITAL_2020_INEI_geogpsperu_juansuyo_931381206_1.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['NOMBDIST'] !== null?String('<div style="color: #000000; font-size: 6pt; font-family: \'MS Shell Dlg 2\', sans-serif;">' + layer.feature.properties['NOMBDIST']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_LIMITE_DISTRITAL_2020_INEI_geogpsperu_juansuyo_931381206_1'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_KMDAADOKM2_2.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['DISTRITOS'] !== null?String('<div style="color: #000000; font-size: 6pt; font-family: \'MS Shell Dlg 2\', sans-serif;">' + layer.feature.properties['DISTRITOS']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_KMDAADOKM2_2'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_SOLESPERCPITAPRESUPUESTOMILLONES_3.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['DISTRITOS'] !== null?String('<div style="color: #000000; font-size: 6pt; font-family: \'MS Shell Dlg 2\', sans-serif;">' + layer.feature.properties['DISTRITOS']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_SOLESPERCPITAPRESUPUESTOMILLONES_3'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_PARCIALGASTO_4.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['DISTRITOS'] !== null?String('<div style="color: #000000; font-size: 6pt; font-family: \'MS Shell Dlg 2\', sans-serif;">' + layer.feature.properties['DISTRITOS']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_PARCIALGASTO_4'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_DAOPARCIALREDVIALTOTAL_5.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['DISTRITOS'] !== null?String('<div style="color: #000000; font-size: 5pt; font-family: \'MS Shell Dlg 2\', sans-serif;">' + layer.feature.properties['DISTRITOS']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_DAOPARCIALREDVIALTOTAL_5'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_DAOPARCIAL_6.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['DISTRITOS'] !== null?String('<div style="color: #000000; font-size: 6pt; font-family: \'MS Shell Dlg 2\', sans-serif;">' + layer.feature.properties['DISTRITOS']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_DAOPARCIAL_6'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        resetLabels([layer_LIMITE_DISTRITAL_2020_INEI_geogpsperu_juansuyo_931381206_1,layer_KMDAADOKM2_2,layer_SOLESPERCPITAPRESUPUESTOMILLONES_3,layer_PARCIALGASTO_4,layer_DAOPARCIALREDVIALTOTAL_5,layer_DAOPARCIAL_6]);
+        map.on("zoomend", function(){
+            resetLabels([layer_LIMITE_DISTRITAL_2020_INEI_geogpsperu_juansuyo_931381206_1,layer_KMDAADOKM2_2,layer_SOLESPERCPITAPRESUPUESTOMILLONES_3,layer_PARCIALGASTO_4,layer_DAOPARCIALREDVIALTOTAL_5,layer_DAOPARCIAL_6]);
+        });
+        map.on("layeradd", function(){
+            resetLabels([layer_LIMITE_DISTRITAL_2020_INEI_geogpsperu_juansuyo_931381206_1,layer_KMDAADOKM2_2,layer_SOLESPERCPITAPRESUPUESTOMILLONES_3,layer_PARCIALGASTO_4,layer_DAOPARCIALREDVIALTOTAL_5,layer_DAOPARCIAL_6]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([layer_LIMITE_DISTRITAL_2020_INEI_geogpsperu_juansuyo_931381206_1,layer_KMDAADOKM2_2,layer_SOLESPERCPITAPRESUPUESTOMILLONES_3,layer_PARCIALGASTO_4,layer_DAOPARCIALREDVIALTOTAL_5,layer_DAOPARCIAL_6]);
+        });
+        </script>
     </body>
 </html>
