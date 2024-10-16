@@ -1,12 +1,57 @@
 let playlist = [ {
   'title': 'Jósean Log - Chachachá',
-  'audio': "Jósean Log - Chachachá.mp3",
+  'audio': "assets/Jósean Log - Chachachá.mp3",
 }, {
   'title': 'Feid - LUNA',
   'audio': "assets/Feid - LUNA.mp3",
 },{
   'title': 'Oscar Ortiz - First Love',
-  'audio': "Oscar Ortiz - First Love.mp3",
+  'audio': "assets/Oscar Ortiz - First Love.mp3",
+},{
+  'title': 'Shakira - Acróstico',
+  'audio': "assets/Shakira - Acróstico.m4a",
+},{
+  'title': 'Pedro Suarez-Vertiz - Amor Yo Te Perdí La Fe',
+  'audio': "assets/Pedro Suarez-Vertiz - Amor Yo Te Perdí La Fe.mp3",
+},{
+  'title': 'Pedro Suarez-Vertiz - Buscando Razón',
+  'audio': "assets/Pedro Suarez-Vertiz - Buscando Razón.mp3",
+},{
+  'title': 'Pedro Suarez-Vertiz - Como las Mariposas',
+  'audio': "assets/Pedro Suarez-Vertiz - Como las Mariposas.mp3",
+},{
+  'title': 'Pedro Suarez-Vertiz - Cuando Pienses en Volver',
+  'audio': "assets/Pedro Suarez-Vertiz - Cuando Pienses en Volver.mp3",
+},{
+  'title': 'Pedro Suarez-Vertiz - Cuéntame',
+  'audio': "assets/Pedro Suarez-Vertiz - Cuéntame.mp3",
+},{
+  'title': 'Pedro Suarez-Vertiz - Lo Olvidé',
+  'audio': "assets/Pedro Suarez-Vertiz - Lo Olvidé.mp3",
+},{
+  'title': 'Pedro Suarez-Vertiz - Los Globos del Cielo',
+  'audio': "assets/Pedro Suarez-Vertiz - Los Globos del Cielo.mp3",
+},{
+  'title': 'Pedro Suarez-Vertiz - Me Estoy Enamorando',
+  'audio': "assets/Pedro Suarez-Vertiz - Me Estoy Enamorando.mp3",
+},{
+  'title': 'Pedro Suarez-Vertiz - Mi Auto Era Una Rana',
+  'audio': "assets/Pedro Suarez-Vertiz - Mi Auto Era Una Rana.mp3",
+},{
+  'title': 'Pedro Suarez-Vertiz - No Llores Más Morena',
+  'audio': "assets/Pedro Suarez-Vertiz - No Llores Más Morena.mp3",
+},{
+  'title': 'Pedro Suarez-Vertiz - No Llores Más',
+  'audio': "assets/Pedro Suarez-Vertiz - No Llores Más.mp3",
+},{
+  'title': 'Pedro Suarez-Vertiz - No Pensé Que Era Amor',
+  'audio': "assets/Pedro Suarez-Vertiz - No Pensé Que Era Amor.mp3",
+},{
+  'title': 'Pedro Suarez-Vertiz - Si Escuchas a un Angel',
+  'audio': "assets/Pedro Suarez-Vertiz - Si Escuchas a un Angel.mp3",
+},{
+  'title': 'Pedro Suarez-Vertiz - Te Siento de Sólo Pensar',
+  'audio': "assets/Pedro Suarez-Vertiz - Te Siento de Sólo Pensar.mp3",
 }];
 i = 0;
 n = playlist.length;
