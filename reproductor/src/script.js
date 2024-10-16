@@ -1,10 +1,13 @@
 let playlist = [ {
-  'title': 'Here it Comes - TrackTribe',
-  'audio': "As You Were - TrackTribe.mp3",
+  'title': 'Jósean Log - Chachachá',
+  'audio': "Jósean Log - Chachachá.mp3",
 }, {
-  'title': 'Mulholland - King Canyon',
-  'audio': "assets/Mulholland - King Canyon.mp3",
-} ];
+  'title': 'Feid - LUNA',
+  'audio': "assets/Feid - LUNA.mp3",
+},{
+  'title': 'Oscar Ortiz - First Love',
+  'audio': "Oscar Ortiz - First Love.mp3",
+}];
 i = 0;
 n = playlist.length;
 let player = document.getElementById( 'player' );
