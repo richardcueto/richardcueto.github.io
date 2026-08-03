@@ -14,3 +14,4 @@
 ## Instalar React
 
 - npm create vite@5.2.3
+- appwiz.cpl (abrir desintalar programas)
