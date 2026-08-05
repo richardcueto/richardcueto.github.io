@@ -6,6 +6,13 @@ import './index.css'
 import {ThemeProvider} from './components/context/ThemeContext'
 import { HelmetProvider } from "react-helmet-async";
 
+const redirect = window.location.search;
+
+if (redirect.startsWith("?/")) {
+  const newUrl = redirect.replace("?/", "/");
+  window.history.replaceState(null, "", newUrl);
+}
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ThemeProvider>
