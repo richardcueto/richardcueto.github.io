@@ -181,7 +181,7 @@ const BlogDetailsPage = () => {
                 </div>
                 <div>
                   {/* El editor se instancia únicamente cuando blogsList existe */}
-                  <BlockNoteViewer content={blogsList?.content} />
+                  <p>Falta arreglar algun dia</p>
 
                   {/* <div className="mb-10 w-full overflow-hidden rounded-sm">
                     <div className="relative aspect-97/60 w-full sm:aspect-97/44">
