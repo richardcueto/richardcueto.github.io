@@ -151,11 +151,6 @@ const AppHeader: React.FC = () => {
             </form>
           </div>
         </div>
-        
-        <Link to="/blog-form">
-            <button onClick={()=>{alert("click")}}>Blog</button>
-        </Link>
-
         <div
           className={`${
             isApplicationMenuOpen ? "flex" : "hidden"

@@ -3,73 +3,71 @@ import "@blocknote/mantine/style.css";
 import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/mantine";
 
-import { useState,useEffect,useMemo } from "react";
+import { useState,useEffect } from "react";
 import { useParams } from "react-router-dom";
 import SharePost from "../../components/Blog/SharePost";
 import TagButton from "../../components/Blog/TagButton";
-import { supabase } from '../../supabase/config';
+import { supabase_blog_id } from '../../services/blog';
 import { BlogType } from "../../types/blog";
 
-// Componente secundario para instanciar el editor de forma segura una vez exista el contenido
-const BlockNoteViewer = ({ content }: { content?: string }) => {
-  const initialBlocks = useMemo(() => {
-    if (!content) return undefined;
-    try {
-      return typeof content === "string" ? JSON.parse(content) : content;
-    } catch (e) {
-      console.error("Error al parsear el JSON de BlockNote:", e);
-      return undefined;
-    }
-  }, [content]);
 
-  // Si no hay bloques válidos aún, no instanciamos el editor para evitar que quede vacío
-  if (!initialBlocks) return null;
-
-  return <BlockNoteInternal initialContent={initialBlocks} />;
-};
-
-// Componente interno para asegurar que el Hook se llame siempre con initialContent definido
-const BlockNoteInternal = ({ initialContent }: { initialContent: any }) => {
-  const editor = useCreateBlockNote({
-    initialContent,
-  });
-
-  return <BlockNoteView editor={editor} editable={false} theme="light" />;
-};
 
 const BlogDetailsPage = () => {
+  const [theme, setTheme] = useState<"light" | "dark">("light");
   const {id}=useParams();
-  const [blogsList, setBlogsList] = useState<BlogType | null>(null);
+  const editor = useCreateBlockNote();
+  const [blogsList, setBlogsList] = useState<BlogType>();;
   const [loading, setLoading] = useState<boolean>(true);
 
+  // 1. EFECTO PARA EL MODO OSCURO (DOM Observer)
   useEffect(() => {
+    const isDark = document.documentElement.classList.contains("dark");
+    setTheme(isDark ? "dark" : "light");
+
+    const observer = new MutationObserver(() => {
+      const updatedDark = document.documentElement.classList.contains("dark");
+      setTheme(updatedDark ? "dark" : "light");
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    // La función de limpieza (disconnect) SIEMPRE va al final del useEffect
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+
     const fetchBlogPost = async () => {
       if (!id) return;
 
       try{
         setLoading(true)
-        const { data, error}=await supabase
-        .from('Blogs')
-        .select(`
-          id,
-          title,
-          paragraph,
-          content,
-          image,
-          tags,
-          publishDate,
-          author:Autores (
-            name,
-            image,
-            designation
-          )
-        `)
-        .eq('id', id) // Filtra por el ID recibid;
-        .single(); // Devuelve un objeto único en lugar de un arreglo
-        
-        if (error) throw error;
 
-        setBlogsList(data);
+        const data = await supabase_blog_id(id);
+        console.log();
+        const formattedData: BlogType ={
+                id: data.id,
+                title: data.title,
+                paragraph: data.paragraph,
+                content: data.content,
+                image: data.image,
+                tags: data.tags || [],
+                publishDate: data.publishDate,
+                author: Array.isArray(data.author)
+                  ? data.author[0]
+                  : data.author || { name: '', image: '', designation: '' },
+              };
+
+        const contentValue = formattedData.content;
+        if (contentValue) {
+          const blocks = await editor.tryParseHTMLToBlocks(contentValue);
+          editor.replaceBlocks(editor.document, blocks);
+        }
+
+        setBlogsList(formattedData)
 
       }catch (error){
         console.error('Error al cargar la publicación:', error);
@@ -106,14 +104,14 @@ const BlogDetailsPage = () => {
                       <div className="mr-4">
                         <div className="relative h-10 w-10 overflow-hidden rounded-full">
                           <img
-                            src="/images/blog/author-02.png"
+                            src={blogsList?.author.image && blogsList.author.image.trim() !== "" ? blogsList.author.image : "/images/placeholder.jpg"}
                             alt="author"
                           />
                         </div>
                       </div>
                       <div className="w-full">
                         <span className="text-body-color mb-1 text-base font-medium">
-                          By <span>{blogsList?.author.name}</span>
+                          By <span> {blogsList?.author.name} </span>
                         </span>
                       </div>
                     </div>
@@ -180,69 +178,16 @@ const BlogDetailsPage = () => {
                   </div>
                 </div>
                 <div>
-                  {/* El editor se instancia únicamente cuando blogsList existe */}
-                  <BlockNoteViewer content={blogsList?.content} />
-
-                  {/* <div className="mb-10 w-full overflow-hidden rounded-sm">
-                    <div className="relative aspect-97/60 w-full sm:aspect-97/44">
-                      <img
-                        src="/images/blog/blog-details-02.jpg"
-                        alt="image"
-                        className="object-cover object-center"
-                      />
-                    </div>
-                  </div> */}
-                  <p className="text-body-color mb-8 text-base leading-relaxed font-medium sm:text-lg sm:leading-relaxed lg:text-base lg:leading-relaxed xl:text-lg xl:leading-relaxed">
-                    {/* Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                    do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua. Quis enim lobortis scelerisque fermentum. Neque
-                    sodales ut etiam sit amet. Ligula ullamcorper */}
-                    {/* <strong className="text-primary dark:text-white">
-                      malesuada
-                    </strong> */}
-                    {/* proin libero nunc consequat interdum varius. Quam
-                    pellentesque nec nam aliquam sem et tortor consequat.
-                    Pellentesque adipiscing commodo elit at imperdiet. */}
-                  </p>
-                  <p className="text-body-color mb-10 text-base leading-relaxed font-medium sm:text-lg sm:leading-relaxed lg:text-base lg:leading-relaxed xl:text-lg xl:leading-relaxed">
-                    {/* Semper auctor neque vitae tempus quam pellentesque nec. */}
-                    <span className="text-primary underline dark:text-white">
-                      {/* Amet dictum sit amet justo */}
-                    </span>
-                    {/* donec enim diam. Varius sit amet mattis vulputate enim nulla
-                    aliquet porttitor. Odio pellentesque diam volutpat commodo
-                    sed. */}
-                  </p>
-                  <h3 className="font-xl mb-10 leading-tight font-bold text-black sm:text-2xl sm:leading-tight lg:text-xl lg:leading-tight xl:text-2xl xl:leading-tight dark:text-white">
-                    {/* Digital marketplace for Ui/Ux designers. */}
-                  </h3>
-                  <p className="text-body-color mb-10 text-base leading-relaxed font-medium sm:text-lg sm:leading-relaxed lg:text-base lg:leading-relaxed xl:text-lg xl:leading-relaxed">
-                    {/* consectetur adipiscing elit in voluptate velit esse cillum
-                    dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                    mattis vulputate cupidatat. */}
-                  </p>
-                  {/* <ul className="text-body-color mb-10 list-inside list-disc">
-                    <li className="text-body-color mb-2 text-base font-medium sm:text-lg lg:text-base xl:text-lg">
-                      Consectetur adipiscing elit in voluptate velit.
-                    </li>
-                    <li className="text-body-color mb-2 text-base font-medium sm:text-lg lg:text-base xl:text-lg">
-                      Mattis vulputate cupidatat.
-                    </li>
-                    <li className="text-body-color mb-2 text-base font-medium sm:text-lg lg:text-base xl:text-lg">
-                      Vulputate enim nulla aliquet porttitor odio pellentesque
-                    </li>
-                    <li className="text-body-color mb-2 text-base font-medium sm:text-lg lg:text-base xl:text-lg">
-                      Ligula ullamcorper malesuada proin
-                    </li>
-                  </ul> */}
-                  {/* <div className="bg-primary/10 relative z-10 mb-10 overflow-hidden rounded-md p-8 md:p-9 lg:p-8 xl:p-9">
+                  <BlockNoteView
+                    editor={editor}
+                    theme={theme}
+                    editable={false}
+                  />
+                  <div className="bg-primary/10 relative z-10 mb-10 overflow-hidden rounded-md p-8 md:p-9 lg:p-8 xl:p-9">
                     <p className="text-body-color text-center text-base font-medium italic">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                      sed do eiusmod incididunt utionals labore et dolore magna
-                      aliqua. Quis lobortis scelerisque fermentum, The Neque ut
-                      etiam sit amet.
+                      {blogsList?.publishDate}
                     </p>
-                    {/* <span className="absolute top-0 left-0 z-[-1]">
+                    <span className="absolute top-0 left-0 z-[-1]">
                       <svg
                         width="132"
                         height="109"
@@ -293,8 +238,8 @@ const BlogDetailsPage = () => {
                           </linearGradient>
                         </defs>
                       </svg>
-                    </span> */}
-                    {/* <span className="absolute right-0 bottom-0 z-[-1]">
+                    </span>
+                    <span className="absolute right-0 bottom-0 z-[-1]">
                       <svg
                         width="53"
                         height="30"
@@ -381,33 +326,29 @@ const BlogDetailsPage = () => {
                           </radialGradient>
                         </defs>
                       </svg>
-                    </span> */}
-                  {/* </div> */}
-                  {/* <p className="text-body-color mb-10 text-base leading-relaxed font-medium sm:text-lg sm:leading-relaxed lg:text-base lg:leading-relaxed xl:text-lg xl:leading-relaxed">
-                    consectetur adipiscing elit in voluptate velit esse cillum
-                    dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                    mattis vulputate cupidatat.
-                  </p> */}
-                  {/* <div className="items-center justify-between sm:flex">
+                    </span>
+                  </div>
+                  <p className="text-body-color mb-10 text-base leading-relaxed font-medium sm:text-lg sm:leading-relaxed lg:text-base lg:leading-relaxed xl:text-lg xl:leading-relaxed">
+                    {blogsList?.paragraph}
+                  </p> 
+                  <div className="items-center justify-between sm:flex">
                     <div className="mb-5">
                       <h4 className="text-body-color mb-3 text-sm font-medium">
                         Popular Tags :
                       </h4>
                       <div className="flex items-center">
-                        <TagButton text="Design" />
-                        <TagButton text="Development" />
-                        <TagButton text="Info" />
+                        <TagButton text="Información" />
                       </div>
                     </div>
                     <div className="mb-5">
                       <h5 className="text-body-color mb-3 text-sm font-medium sm:text-right">
-                        Share this post :
+                        Comparte este articulo :
                       </h5>
                       <div className="flex items-center sm:justify-end">
                         <SharePost />
                       </div>
-                    </div> */}
-                  {/* </div> */}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

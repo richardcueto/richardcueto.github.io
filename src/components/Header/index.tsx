@@ -2,13 +2,12 @@ import {Link} from "react-router-dom";
 import { useEffect, useState } from "react";
 import ThemeToggler from "./ThemeToggler";
 import menuData from "./menuData";
-// import SigninModal from "../../app/signin";
 
 const Header = () => {
   // Navbar toggle
   const [navbarOpen, setNavbarOpen] = useState(false);
   const navbarToggleHandler = () => {
-    setNavbarOpen(!navbarOpen);
+    setNavbarOpen((prev) => !prev);
   };
 
   // Sticky Navbar
@@ -20,26 +19,21 @@ const Header = () => {
       setSticky(false);
     }
   };
+
   useEffect(() => {
     window.addEventListener("scroll", handleStickyNavbar);
-  });
+
+    // Limpieza para evitar fugas de memoria (memory leaks)
+    return () => {
+      window.removeEventListener('scroll', handleStickyNavbar);
+    };
+  },[]);
 
   // submenu handler
   const [openIndex, setOpenIndex] = useState(-1);
-  const handleSubmenu = (index) => {
-    if (openIndex === index) {
-      setOpenIndex(-1);
-    } else {
-      setOpenIndex(index);
-    }
+  const handleSubmenu = (index:any) => {
+    setOpenIndex((prevIndex) => (prevIndex === index ? -1 : index));
   };
-
-  // // modal de ingreso y registro
-  // const [isModalOpen, setIsModalOpen] = useState(false);
-  // const handleLoginSuccess = (userData) => {
-  //   console.log("Datos recibidos:", userData);
-  //   alert(`Bienvenido: ${userData.email}`);
-  // };
 
   return (
     <>
@@ -140,7 +134,7 @@ const Header = () => {
                                 openIndex === index ? "block" : "hidden"
                               }`}
                             >
-                              {menuItem.submenu.map((submenuItem, index) => (
+                              {menuItem.submenu?.map((submenuItem, index) => (
                                 <a
                                   href={submenuItem.path}
                                   key={index}
@@ -164,19 +158,12 @@ const Header = () => {
                 >
                   Ingresar
                 </Link>
-
-                {/* Modal desglosado
-                <SigninModal
-                  isOpen={isModalOpen}
-                  onClose={()=>setIsModalOpen(false)}
-                  onSuccess={handleLoginSuccess}  
-                /> */}
                 
                 <Link
                   to="/signup"
                   className="ease-in-up shadow-btn hover:shadow-btn-hover bg-primary hover:bg-primary/90 hidden rounded-xs px-8 py-3 text-base font-medium text-white transition duration-300 md:block md:px-9 lg:px-6 xl:px-9"
                 >
-                  Registrar
+                  Registrarse
                 </Link>
                 <div>
                   <ThemeToggler />

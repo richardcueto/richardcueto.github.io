@@ -1,7 +1,5 @@
+import './index.css'
 import { Route, Routes, useLocation } from 'react-router-dom';
-import './index.css'
-import './index.css'
-
 // Componentes globales
 import Header from "./components/Header";
 import Footer from './components/Footer';
@@ -17,20 +15,17 @@ import Contact from "./pages/contact/page"
 import BlogSidebar from "./pages/blog-sidebar/page"
 import BlogDetail from "./pages/blog-details/page"
 import ScrollUp from "./components/Common/ScrollUp";
-import Video from "./components/Video";
-import Brands from "./components/Brands";
 import AboutSectionOne from "./components/About/AboutSectionOne";
 import AboutSectionTwo from "./components/About/AboutSectionTwo";
 
 // Dashboard
+import { ProtectedRoute } from "./components/ProtectedRoute";
 import Dashboard from './pages/dashboard/page';
-import BlogForm from "./dashboard/pages/Blog/blog";
-// import Ecommerce from './pages/ecommerce/page'
+import Ecommerce from './pages/ecommerce/page'
 
 function App() {
   const location = useLocation();
-
-  // Verifica si estamos en la landing o en alguna subruta del dashboard
+  // Verifica si estamos en la landing o en alguna subruta
   const esDashboard = location.pathname.startsWith("/dashboard");
   const esEcommerce = location.pathname.startsWith("/ecommerce");
   const esForm = location.pathname.startsWith("/blog-form");
@@ -46,8 +41,6 @@ function App() {
                           <>
                             <Hero />
                             <Features />
-                            <Video /> 
-                            <Brands />
                             <AboutSectionOne />
                             <AboutSectionTwo />     
                           </>
@@ -61,10 +54,18 @@ function App() {
         <Route path='/contact' element={<Contact />}/>
         <Route path='/blog-sidebar' element={<BlogSidebar />}/>
         <Route path='/blog-details/:id' element={<BlogDetail />}/>
+        <Route path='/ecommerce/*' element={<Ecommerce />}/>
+        
+        {/* Rutas Protegidas (Solo accesibles con sesión) */}
+        <Route 
+          path="/dashboard/*"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
 
-        <Route path='/dashboard/*' element={<Dashboard />}/>
-        <Route path="blog-form" element={<BlogForm />}></Route>
-        {/* <Route path='/ecommerce/*' element={<Ecommerce />}/> */}
       </Routes>
                           
       {!esDashboard && !esEcommerce && !esForm && <Footer />}

@@ -11,7 +11,6 @@ import {
   ListIcon,
   PageIcon,
   PieChartIcon,
-  PlugInIcon,
   TableIcon,
   UserCircleIcon,
 } from "../icons";
@@ -63,6 +62,7 @@ const navItems: NavItem[] = [
     icon: <PageIcon />,
     subItems: [
       { name: "Blank Page", path: "/dashboard/blank", pro: false },
+      { name: "Blog", path: "/dashboard/blog", pro: false },
       { name: "404 Error", path: "/dashboard/error-404", pro: false },
     ],
   },
@@ -87,14 +87,6 @@ const othersItems: NavItem[] = [
       { name: "Buttons", path: "/dashboard/buttons", pro: false },
       { name: "Images", path: "/dashboard/images", pro: false },
       { name: "Videos", path: "/dashboard/videos", pro: false },
-    ],
-  },
-  {
-    icon: <PlugInIcon />,
-    name: "Authentication",
-    subItems: [
-      { name: "Sign In", path: "/dashboard/signin", pro: false },
-      { name: "Sign Up", path: "/dashboard/signup", pro: false },
     ],
   },
 ];

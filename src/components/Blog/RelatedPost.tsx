@@ -10,12 +10,14 @@ const RelatedPost = ({
   slug: string;
   title: string;
   date: string;
-}) => {
+}) => { 
+  const imgSrc = image && image.trim() !== "" ? image : "/images/placeholder.jpg";
+
   return (
     <div className="flex items-center lg:block xl:flex">
       <div className="mr-5 lg:mb-3 xl:mb-0">
         <div className="relative h-[60px] w-[70px] overflow-hidden rounded-md sm:h-[75px] sm:w-[85px]">
-          <img src={image} alt={title} />
+          <img src={imgSrc} alt={title} />
         </div>
       </div>
       <div className="w-full">

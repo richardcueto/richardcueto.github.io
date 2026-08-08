@@ -6,8 +6,8 @@ const AboutPage = () => {
   return (
     <>
       <Breadcrumb
-        pageName="About Page"
-        description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. In varius eros eget sapien consectetur ultrices. Ut quis dapibus libero."
+        pageName="Pagina de acerca de"
+        description="Esta es la pagina de acerca de"
       />
       <AboutSectionOne />
       <AboutSectionTwo />
