@@ -19,7 +19,7 @@ const FastAPI = () => {
     };
 
     const response = await fetch(
-      "https://richardcuetogithubio-production.up.railway.app",
+      "https://richardcuetogithubio-production.up.railway.app/calcular",
       {
         method: "POST",
         headers: {
