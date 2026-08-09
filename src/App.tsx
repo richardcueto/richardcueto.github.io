@@ -23,17 +23,21 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import Dashboard from './pages/dashboard/page';
 import Ecommerce from './pages/ecommerce/page'
 
+// FastAPI
+import FastApi from './pages/fastAPI/page';
+
 function App() {
   const location = useLocation();
   // Verifica si estamos en la landing o en alguna subruta
   const esDashboard = location.pathname.startsWith("/dashboard");
   const esEcommerce = location.pathname.startsWith("/ecommerce");
   const esForm = location.pathname.startsWith("/blog-form");
+  const esFastAPI = location.pathname.startsWith("/fastapi");
 
   return (  
     <>
       <ScrollUp />
-      {!esDashboard && !esEcommerce && !esForm && <Header />}
+      {!esDashboard && !esEcommerce && !esForm && !esFastAPI && <Header />}
 
       <Routes>
         {/* Landing Page Principal */}
@@ -51,6 +55,7 @@ function App() {
         <Route path='/signup' element={<SignupPage />}/>
         <Route path='/blog' element={<Blog />}/>
         <Route path='/about' element={<About />}/>
+        <Route path='/fastapi' element={<FastApi />}/>
         <Route path='/contact' element={<Contact />}/>
         <Route path='/blog-sidebar' element={<BlogSidebar />}/>
         <Route path='/blog-details/:id' element={<BlogDetail />}/>
@@ -68,7 +73,7 @@ function App() {
 
       </Routes>
                           
-      {!esDashboard && !esEcommerce && !esForm && <Footer />}
+      {!esDashboard && !esEcommerce && !esForm && !esFastAPI && <Footer />}
     </>
   )
 }

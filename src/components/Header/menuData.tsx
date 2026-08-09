@@ -26,6 +26,12 @@ const menuData: Menu[] = [
     newTab: false,
   },
   {
+    id: 6,
+    title: "FastAPI",
+    path: "/fastapi",
+    newTab: false,
+  },
+  {
     id: 5,
     title: "Otros Contenidos",
     newTab: false,
