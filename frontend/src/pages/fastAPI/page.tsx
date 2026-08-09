@@ -6,6 +6,9 @@ const FastAPI = () => {
   const [fc, setFc] = useState("");
   const [fy, setFy] = useState("");
 
+  const [a, seta] = useState("");
+  const [b, setb] = useState("");
+
   const [resultado, setResultado] = useState<any>(null);
   
   const calcular= async (e: React.FormEvent) => {
@@ -28,10 +31,29 @@ const FastAPI = () => {
         body: JSON.stringify(datos)
       }
     );
-  
+
     const data = await response.json();
+
+    const datos_pitagoras = {
+    a: Number(a),
+    b: Number(b)
+    };
+
+    const response_pitagoras = await fetch(
+      "http://127.0.0.1:8000/pitagoras",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(datos_pitagoras)
+      }
+    );
+  
+    const data_pitagoras = await response_pitagoras.json();
   
     console.log(data);
+    console.log(data_pitagoras);
 
     setResultado(data);
   }
@@ -113,6 +135,31 @@ const FastAPI = () => {
       </button>
 
     </form>
+
+    <div>
+      <label className="block text-sm font-semibold text-slate-800 mb-1">
+        a
+      </label>
+      <input
+        type="number"
+        step="any"
+        value={a}
+        onChange={(e) => seta(e.target.value)}
+        className="w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent transition"
+      />
+
+      <label className="block text-sm font-semibold text-slate-800 mb-1">
+        b
+      </label>
+      <input
+        type="number"
+        step="any"
+        value={b}
+        onChange={(e) => setb(e.target.value)}
+        className="w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent transition"
+      />
+    </div>
+
   </div>
 
   {/* Tarjeta de Resultados */}

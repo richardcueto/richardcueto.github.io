@@ -23,6 +23,10 @@ class Viga(BaseModel):
     fc: float
     fy: float
 
+class Pitagoras(BaseModel):
+    a: float
+    b: float
+
 @app.post("/calcular")
 def calcular(datos:Viga):
     momento = datos.carga * datos.luz ** 2 / 8
@@ -33,6 +37,16 @@ def calcular(datos:Viga):
         "carga": datos.carga,
         "fc": datos.fc,
         "fy": datos.fy
+    }
+
+@app.post("/pitagoras")
+def pitagoras(datos:Pitagoras):
+    c = (datos.a**2 + datos.b**2)**0.5
+
+    return {
+        "a": datos.a,
+        "b": datos.b,
+        "Hipotenusa": c
     }
 
 
