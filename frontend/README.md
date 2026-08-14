@@ -17,7 +17,9 @@
 - appwiz.cpl (abrir desintalar programas)
 
 ## Correr fronted
-- npm rund dev
+- npm run dev :desarrollo
+- npm run build :compilar
+- npm run preview :ver compilado
 
 ## Correr backend
 - nuvicorn main:app --reload
