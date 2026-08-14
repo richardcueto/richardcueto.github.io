@@ -15,3 +15,9 @@
 
 - npm create vite@5.2.3
 - appwiz.cpl (abrir desintalar programas)
+
+## Correr fronted
+- npm rund dev
+
+## Correr backend
+- nuvicorn main:app --reload

@@ -484,7 +484,7 @@ export const BlogDataForm: React.FC = () => {
           </div>
 
           {/* Markdown Editor */}
-          <div className='prose'>
+          <div >
             <label className="block text-sm font-medium mb-1">
               Cuerpo del Post (Markdown)
             </label>

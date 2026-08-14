@@ -1,4 +1,3 @@
-import './index.css'
 import { Route, Routes, useLocation } from 'react-router-dom';
 // Componentes globales
 import Header from "./components/Header";

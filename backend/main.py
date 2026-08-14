@@ -18,25 +18,27 @@ app.add_middleware(
 )
 
 class Viga(BaseModel):
-    luz: float
-    carga: float
+    b: float
+    h: float
     fc: float
     fy: float
+    Mu: float
 
 class Pitagoras(BaseModel):
     a: float
     b: float
 
-@app.post("/calcular")
-def calcular(datos:Viga):
-    momento = datos.carga * datos.luz ** 2 / 8
+@app.post("/calcularAs")
+def calcularAs(datos:Viga):
+    phi = 0.9
+    d = datos.h-6
+    a = d-(d**2-2*datos.Mu*100000/(phi*0.85*datos.fc*datos.b))**0.5
+    As = datos.Mu*100000/(phi*datos.fy*(d-a/2))
 
     return {
-        "momento": momento,
-        "luz": datos.luz,
-        "carga": datos.carga,
-        "fc": datos.fc,
-        "fy": datos.fy
+        "d": d,
+        "a": a,
+        "As": As,
     }
 
 @app.post("/pitagoras")
