@@ -21,6 +21,7 @@ import HTML from './pages/Etiquetas HTML/page'
 import VentasWhatsapp from './pages/ventasWhatsap/page'
 import PuntoVenta from './pages/puntoVenta/page'
 import Ecommerce from './pages/ecommerce/page';
+import Constancias from './pages/constancias/page';
 import Prueba from './pages/pruebas/page';
 
 //🔒 RUTAS PROTEGIDAS
@@ -57,6 +58,7 @@ function App() {
         <Route path='/ventasWhatsapp' element={<VentasWhatsapp />}/>
         <Route path='/puntoVenta' element={<PuntoVenta />}/>
         <Route path='/ecommerce/*' element={<Ecommerce />}/>
+        <Route path='/constancias' element={<Constancias />}/>
         <Route path='/prueba' element={<Prueba />}/>
 
         {/* 🔒 RUTAS PROTEGIDAS */}

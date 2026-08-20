@@ -1,8 +1,14 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState,ReactNode } from "react";
 
-const ThemeContext = createContext();
+// 1. Defines la estructura de los datos del contexto
+interface ThemeContextType {
+  theme: string;
+  setTheme: React.Dispatch<React.SetStateAction<string>>;
+}
 
-export function ThemeProvider({ children }) {
+const ThemeContext = createContext<ThemeContextType | null>(null);
+
+export function ThemeProvider({ children }:{ children: ReactNode }) {
   // Inicializamos en modo "dark" por defecto para que la plantilla cargue bien los estilos
   const [theme, setTheme] = useState(
     () => localStorage.getItem("theme") || "dark"

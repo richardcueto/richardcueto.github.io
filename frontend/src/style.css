@@ -1,7 +1,7 @@
 @import 'tailwindcss';
 
 /* Variante para el modo oscuro en Tailwind v4 */
-@variant dark (&:where(.dark, .dark *));
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   --breakpoint-*: initial;
@@ -142,3 +142,10 @@
     @apply bg-red-500 grid place-content-center rounded-lg text-white border-2 border-red-600 text-4xl;
   }
 }
+
+@utility header{
+  background-color: #ffffff;
+  padding: 1rem;
+  width: 100%;
+}
+

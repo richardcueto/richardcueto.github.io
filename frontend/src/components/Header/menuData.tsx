@@ -66,6 +66,12 @@ const menuData: Menu[] = [
         path: "/puntoVenta",
         newTab: false,
       },
+      {
+        id: 56,
+        title: "constancias",
+        path: "/constancias",
+        newTab: false,
+      },
     ],
   },
 ];

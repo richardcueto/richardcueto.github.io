@@ -22,7 +22,7 @@ export default function Prueba() {
 
       </form>
 
-      <div className="grid grid-cols-2 gap-4 h-[100vh]">
+      <div className="grid grid-cols-2 gap-4 max-h-10">
         <div className="card col-span-2">header</div>
         <div className="card col-span-2">nav</div>
         <div className="card">section</div>

@@ -89,7 +89,7 @@ export default function PuntoVenta() {
   return (
     <>
       <button 
-        className="bg-amber-100"
+        className="bg-primary"
         type="button"
         onClick={() => {
           setOpen(true);
