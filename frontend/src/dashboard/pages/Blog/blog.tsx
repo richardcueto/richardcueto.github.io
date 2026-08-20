@@ -9,7 +9,7 @@ import "@blocknote/core/fonts/inter.css";
 import React, { useState, useEffect } from 'react';
 import { BlogType } from "../../../types/blog";
 import { supabase } from "../../../supabase/config"; // ✅ Importación de cliente Supabase
-import { supabase_blog, get_create_author_id, supabase_eliminar, supabase_update, supabase_insertar } from "../../../services/blog";
+import { supabase_blog, get_create_author_id, supabase_eliminar, supabase_update, supabase_insert } from "../../../services/baseDatos";
 
 export const BlogDataForm: React.FC = () => {
   const initialFormState: BlogType = {
@@ -356,7 +356,7 @@ export const BlogDataForm: React.FC = () => {
 
       } else {
         // --- MODO CREACIÓN (INSERT) ---
-        await supabase_insertar(
+        await supabase_insert(
           formData.title,
           formData.paragraph,
           formData.content,

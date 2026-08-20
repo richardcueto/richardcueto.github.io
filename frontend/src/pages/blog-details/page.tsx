@@ -7,7 +7,7 @@ import { useState,useEffect } from "react";
 import { useParams } from "react-router-dom";
 import SharePost from "../../components/Blog/SharePost";
 import TagButton from "../../components/Blog/TagButton";
-import { supabase_blog_id } from '../../services/blog';
+import { supabase_blog_id } from '../../services/baseDatos';
 import { BlogType } from "../../types/blog";
 
 

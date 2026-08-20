@@ -42,6 +42,30 @@ const menuData: Menu[] = [
         path: "/blog-sidebar",
         newTab: false,
       },
+      {
+        id: 52,
+        title: "Pruebas",
+        path: "/prueba",
+        newTab: false,
+      },
+      {
+        id: 53,
+        title: "HTML",
+        path: "/html",
+        newTab: false,
+      },
+      {
+        id: 54,
+        title: "VentasWhatsapp",
+        path: "/ventasWhatsapp",
+        newTab: false,
+      },
+      {
+        id: 55,
+        title: "puntoVenta",
+        path: "/puntoVenta",
+        newTab: false,
+      },
     ],
   },
 ];

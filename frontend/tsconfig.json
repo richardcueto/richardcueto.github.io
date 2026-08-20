@@ -24,6 +24,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "services/auth.tsx", "services/table.tsx"],
+  "include": ["src", "services/auth.tsx", "services/table.tsx", "public/reproductor"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
